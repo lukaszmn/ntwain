@@ -322,6 +322,34 @@ namespace Sample.Winform
             }
             btnAllSettings.Enabled = src.Capabilities.CapEnableDSUIOnly.IsSupported;
             _loadingCaps = false;
+
+            printAllCapabilities();
+        }
+
+        private void printAllCapabilities() {
+            var caps = _twain.CurrentSource.Capabilities;
+            Type type = caps.GetType();
+            foreach (var pi in type.GetProperties()) {
+                string name = pi.Name;
+
+                string propType = pi.PropertyType.Name;
+                if (!propType.StartsWith("IReadOnlyCapWrapper`") && !propType.StartsWith("ICapWrapper`")) {
+                    PlatformInfo.Current.Log.Info(string.Format("PARAM {0} - UNIDENTIFIED", name));
+                    continue;
+                }
+
+                object val = pi.GetValue(caps, null);
+
+                if ((bool)val.GetType().GetProperty("IsSupported").GetValue(val, null) == true) {
+                    if ((bool)val.GetType().GetProperty("CanGet").GetValue(val, null) == true) {
+                        object val2 = val.GetType().GetMethod("GetCurrent").Invoke(val, null);
+                        PlatformInfo.Current.Log.Info(string.Format("PARAM {0} = {1}", name, val2));
+                    } else
+                        PlatformInfo.Current.Log.Info(string.Format("PARAM {0} - NO GET", name));
+                } else {
+                    PlatformInfo.Current.Log.Info(string.Format("PARAM {0} - UNSUPPORTED", name));
+                }
+            }
         }
 
         private void LoadPaperSize(ICapWrapper<SupportedSize> cap)
