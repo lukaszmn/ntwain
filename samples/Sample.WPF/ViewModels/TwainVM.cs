@@ -307,18 +307,21 @@ namespace Sample.WPF
 
         void _session_DataTransferred(object sender, DataTransferredEventArgs e)
         {
-            ImageSource img = GenerateThumbnail(e);
+            BitmapSource img = GenerateThumbnail(e);
+
             if (img != null)
             {
                 App.Current.Dispatcher.BeginInvoke(new Action(() =>
                 {
                     CapturedImages.Add(img);
                 }));
+
+                //
             }
         }
 
 
-        ImageSource GenerateThumbnail(DataTransferredEventArgs e)
+        BitmapSource GenerateThumbnail(DataTransferredEventArgs e)
         {
             BitmapSource img = null;
 
@@ -329,7 +332,7 @@ namespace Sample.WPF
                     {
                         if (stream != null)
                         {
-                            img = stream.ConvertToWpfBitmap(300, 0);
+                            img = stream.ConvertToWpfBitmap(0, 0);
                         }
                     }
                     break;

@@ -97,6 +97,7 @@
     <Compile Include="Launcher.xaml.cs">
       <DependentUpon>Launcher.xaml</DependentUpon>
     </Compile>
+    <Compile Include="Utils\Saver.cs" />
     <Compile Include="ViewModels\TwainVM.cs" />
     <Page Include="Launcher.xaml">
       <SubType>Designer</SubType>
